@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Properties</h2>
+<a href="/export/properties/">Export CSV</a>
+<table>
+<tr><th>Address</th><th>Postcode</th><th>Bedrooms</th><th>Landlord</th></tr>
+{% for property in properties %}
+<tr>
+<td>{{ property.address_line1 }}, {{ property.city }}</td>
+<td>{{ property.postcode }}</td>
+<td>{{ property.bedrooms }}</td>
+<td>{{ property.landlord_name }}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

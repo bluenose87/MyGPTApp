@@ -1,90 +1,101 @@
-# BTL Property Deal Spreadsheet Analyzer
+# UK Property Management & Compliance Tracker (Django MVP)
 
-This project builds a **Python 3.11+** workflow to:
-1. Read property listings from CSV.
-2. Calculate rental yield and cashflow metrics.
-3. Score and rank deals.
-4. Export ranked results to an Excel spreadsheet (`.xlsx`) using `openpyxl`.
+A simple Django app to manage UK rental properties, tenancies, and compliance certificates/documents.
 
-It is written with **cross-platform paths** (`pathlib`), so it runs on Windows, macOS, and Linux.
+## Features
 
-## 1) Files / modules created
+- Property, Tenancy, ComplianceRecord, and Document models.
+- File uploads for compliance evidence (PDF/images/etc.).
+- Dashboard with compliance status buckets:
+  - **Overdue**
+  - **Due Soon (<= 30 days)**
+  - **OK**
+- Basic UI pages for properties, tenancies, and compliance records.
+- CSV export endpoints for properties, tenancies, and compliance status.
+- Weekly digest management command for due/overdue items.
+- Sample data management command.
+- SQLite by default (Windows-friendly).
 
-```text
-src/btl_deals/
-  __init__.py        # Public exports
-  analyzer.py        # Core business logic and pipeline
-  cli.py             # Command-line entry point
-tests/
-  test_analyzer.py   # Tests for every function
-examples/
-  listings_sample.csv
-  ranked_preview.csv # Example ranked output (CSV preview)
-pyproject.toml       # Python/project/test dependencies
-```
+---
 
-## 2) Code overview
+## Tech Requirements
 
-### `analyzer.py` functions
-- `read_listings(csv_path)`: reads and validates CSV columns.
-- `_monthly_interest_rate(annual_percent)`: helper for monthly mortgage interest.
-- `calculate_metrics(df)`: computes deposit, loan, gross yield, cashflow, and cash-on-cash return.
-- `score_deals(df)`: normalizes metrics and applies weighted scoring.
-- `rank_deals(df)`: sorts by score and assigns rank.
-- `export_ranked_to_excel(df, output_path)`: writes `.xlsx` with `openpyxl` engine.
-- `process_deals(input_csv, output_excel)`: end-to-end pipeline.
+- Python **3.11+**
+- Django **5+**
+- SQLite (bundled with Python)
 
-### `cli.py` usage
-```bash
-python -m btl_deals.cli examples/listings_sample.csv examples/ranked_deals.xlsx
-```
+---
 
-## 3) Input and output examples
+## Quick Start (Windows PowerShell)
 
-### Example input (`examples/listings_sample.csv`)
-```csv
-listing_id,address,purchase_price,monthly_rent,deposit_percent,interest_rate_percent,monthly_costs
-P001,10 High Street,150000,950,25,5.0,180
-P002,20 Market Road,175000,1150,25,5.5,220
-P003,1 Station Avenue,140000,1000,20,5.2,160
-```
+From the repository root:
 
-### Example ranked preview (`examples/ranked_preview.csv`)
-```csv
-rank,listing_id,address,gross_yield_percent,monthly_cashflow,cash_on_cash_return_percent,deal_score
-1,P003,1 Station Avenue,8.571428571428571,354.6666666666665,15.199999999999994,1.0
-2,P002,20 Market Road,7.885714285714286,328.4375,9.008571428571429,0.31049256676149484
-3,P001,10 High Street,7.6,301.25,9.64,0.020396862021227535
-```
-
-## 4) How to run (Windows-friendly)
-
-### PowerShell
 ```powershell
-# From project root
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -U pip
+python -m pip install --upgrade pip
 python -m pip install -e .
 
-# Run analyzer
-python -m btl_deals.cli .\examples\listings_sample.csv .\examples\ranked_deals.xlsx
+# Create DB schema
+python manage.py migrate
+
+# (Optional) load sample data
+python manage.py seed_sample_data
+
+# Create admin user
+python manage.py createsuperuser
+
+# Run server
+python manage.py runserver
 ```
 
-### Command Prompt (cmd.exe)
-```bat
-py -3.11 -m venv .venv
-.\.venv\Scripts\activate.bat
-python -m pip install -U pip
-python -m pip install -e .
-python -m btl_deals.cli .\examples\listings_sample.csv .\examples\ranked_deals.xlsx
+Open:
+- Dashboard: http://127.0.0.1:8000/
+- Admin: http://127.0.0.1:8000/admin/
+
+---
+
+## Useful Commands
+
+### Run tests (due-soon/overdue logic)
+
+```powershell
+python manage.py test properties
 ```
 
-## 5) Run tests
+### Send weekly digest (manual for now)
 
-```bash
-python -m pip install -e .[test]
-pytest
+```powershell
+python manage.py send_weekly_digest --to you@example.com
 ```
 
-`tests/test_analyzer.py` includes tests for every function in `analyzer.py`.
+If `--to` is omitted, the command uses `ADMINS` in settings.
+
+### CSV exports
+
+While server is running:
+
+- `/export/properties/`
+- `/export/tenancies/`
+- `/export/compliance/`
+
+---
+
+## Data Model (MVP)
+
+- `Property`: address, postcode, bedrooms, landlord.
+- `Tenancy`: linked to property, tenant, term dates, rent, deposit.
+- `ComplianceRecord`: linked to property, certificate type (Gas Safety, EICR, EPC, etc.), issue/expiry dates.
+- `Document`: file upload linked to a compliance record.
+
+Compliance status is calculated from `expiry_date`:
+- **Overdue**: expired already.
+- **Due Soon**: expires in next 30 days.
+- **OK**: expiry is more than 30 days away.
+
+---
+
+## Notes
+
+- Media uploads are stored under `media/` in development.
+- Email backend is console by default in settings (safe for local development).

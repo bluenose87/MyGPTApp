@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cards">
+  <div class="card"><strong>Properties</strong><br>{{ total_properties }}</div>
+  <div class="card"><strong>Active Tenancies</strong><br>{{ active_tenancies }}</div>
+  <div class="card overdue"><strong>Overdue</strong><br>{{ overdue|length }}</div>
+  <div class="card due-soon"><strong>Due Soon (≤30 days)</strong><br>{{ due_soon|length }}</div>
+  <div class="card ok"><strong>OK</strong><br>{{ ok|length }}</div>
+</div>
+
+<h2>Overdue</h2>
+<ul>
+{% for rec in overdue %}
+  <li class="overdue">{{ rec.property }} - {{ rec.get_compliance_type_display }} ({{ rec.expiry_date }})</li>
+{% empty %}<li>None</li>{% endfor %}
+</ul>
+
+<h2>Due Soon</h2>
+<ul>
+{% for rec in due_soon %}
+  <li class="due-soon">{{ rec.property }} - {{ rec.get_compliance_type_display }} ({{ rec.expiry_date }})</li>
+{% empty %}<li>None</li>{% endfor %}
+</ul>
+{% endblock %}
