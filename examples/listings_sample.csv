@@ -1,0 +1,4 @@
+listing_id,address,purchase_price,monthly_rent,deposit_percent,interest_rate_percent,monthly_costs
+P001,10 High Street,150000,950,25,5.0,180
+P002,20 Market Road,175000,1150,25,5.5,220
+P003,1 Station Avenue,140000,1000,20,5.2,160
