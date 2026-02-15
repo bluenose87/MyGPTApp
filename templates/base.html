@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rental Compliance Tracker</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    nav a { margin-right: 12px; }
+    .cards { display: flex; gap: 1rem; }
+    .card { border: 1px solid #ddd; border-radius: 6px; padding: 1rem; width: 180px; }
+    .overdue { color: #b42318; }
+    .due-soon { color: #b54708; }
+    .ok { color: #027a48; }
+    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f5f5f5; }
+  </style>
+</head>
+<body>
+  <h1>UK Property Compliance Tracker</h1>
+  <nav>
+    <a href="/">Dashboard</a>
+    <a href="/properties/">Properties</a>
+    <a href="/tenancies/">Tenancies</a>
+    <a href="/compliance/">Compliance</a>
+    <a href="/admin/">Admin</a>
+  </nav>
+  {% block content %}{% endblock %}
+</body>
+</html>

@@ -9,6 +9,7 @@ description = "BTL property deal analyzer that ranks listings and exports to Exc
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+  "Django>=5.0",
   "pandas>=2.0",
   "openpyxl>=3.1",
 ]

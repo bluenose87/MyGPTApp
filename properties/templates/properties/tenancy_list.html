@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Tenancies</h2>
+<a href="/export/tenancies/">Export CSV</a>
+<table>
+<tr><th>Property</th><th>Tenant</th><th>Start</th><th>End</th><th>Rent</th></tr>
+{% for tenancy in tenancies %}
+<tr>
+<td>{{ tenancy.property }}</td>
+<td>{{ tenancy.tenant_name }}</td>
+<td>{{ tenancy.start_date }}</td>
+<td>{{ tenancy.end_date|default:"Active" }}</td>
+<td>£{{ tenancy.monthly_rent }}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

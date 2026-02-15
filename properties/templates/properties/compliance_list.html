@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Compliance Records</h2>
+<a href="/export/compliance/">Export CSV</a>
+<table>
+<tr><th>Property</th><th>Type</th><th>Expiry</th><th>Status</th><th>Documents</th></tr>
+{% for record in records %}
+<tr>
+<td>{{ record.property }}</td>
+<td>{{ record.get_compliance_type_display }}</td>
+<td>{{ record.expiry_date }}</td>
+<td>{{ record.status }}</td>
+<td>
+  {% for doc in record.documents.all %}
+    <a href="{{ doc.file.url }}">{{ doc.description|default:doc.file.name }}</a><br>
+  {% empty %}
+    No documents
+  {% endfor %}
+</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}
